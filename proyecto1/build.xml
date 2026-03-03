@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="proyecto1" default="default" basedir=".">
+    <description>Builds, tests, and runs the project proyecto1.</description>
+    <import file="nbproject/build-impl.xml"/>
+    
+    <property name="cup" location = "src/cup"/>
+    <property name="jflex" location = "src/jflex"/>
+    <property name="java" location = "src"/>
+    <property name="clases" location = "bin"/>
+    <property name="lib" location = "lib"/>
+    <property name="tools" location = "tools"/>
+    
+    
+    
+    //tareas
+    
+    <taskdef  name="jflex"  classname = "jflex.anttask.JFlexTask"  classpath = "{tools}/jflex-full-1.9.1.jar"/>
+    <taskdef  name = "cup"  classname = "java_cup.anttask.CUPTask" classpath = "{tools}/java-cup-11b.jar"/>
+    
+      <target name= "generate">
+        <jflex  file="${jflex}/Scanner.jflex"   destdir="${java}"/>
+        <cup    srcfile="${cup}/Parser.cup"     destdir="${java}" parser="Parser"
+                interface="true"                locations="false"/>
+    </target>
+    
+    <path id="libraries"> 
+        <files includes="${lib}/java-cup-11b-runtime.jar" /> 
+    </path>
+
+    <target name="compile" depends="generate">
+        <javac srcdir="${java}" destdir="${classes}" > 
+            <classpath refid="libraries" /> 
+        </javac>
+    </target>
+
+    <target name="clean">
+        <delete file="${java}/analisis/Lexer.java" />
+        <delete file="${java}/analisis/Parser.java" />
+        <delete file="${java}/analisis/sym.java" />
+    </target>
+    
+</project>
