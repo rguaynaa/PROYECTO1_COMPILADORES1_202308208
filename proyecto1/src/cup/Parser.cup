@@ -1,0 +1,29 @@
+package proyecto1;
+
+import java_cup.runtime.*;
+
+parser code {:
+    public void report_error(String message, Object info) {
+        System.err.println("Error sintáctico: " + message);
+    }
+:}
+
+/* ── Terminales ── */
+terminal DATABASE, USE, TABLE, READ, ADD, UPDATE, CLEAR, EXPORT, STORE, AT;
+terminal FIELDS, FILTER, SET;
+terminal INT, FLOAT, BOOL, STRING, ARRAY, OBJECT, NULL;
+terminal Boolean TRUE, FALSE;
+terminal Integer ENTERO;
+terminal Double  DECIMAL;
+terminal String  CADENA, ID;
+terminal IGUAL, DIFERENTE, MAYOR, MENOR, MAYORIGUAL, MENORIGUAL;
+terminal AND, OR, NOT;
+terminal ASIGNACION;
+terminal ABRELLAVE, CIERRALLAVE, ABREPAREN, CIERRAPAREN, ABRECORCHETE, CIERRACORCHETE;
+terminal PUNTOYCOMA, DOSPUNTOS, COMA, PUNTO, ASTERISCO;
+
+/* ── No terminales ── */
+non terminal programa;
+
+/* ── Producciones ── */
+programa ::= /* vacío */ ;
