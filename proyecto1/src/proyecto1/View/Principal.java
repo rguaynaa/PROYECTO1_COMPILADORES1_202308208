@@ -28,30 +28,97 @@ public class Principal extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jTextArea1 = new javax.swing.JTextArea();
+        jButton1 = new javax.swing.JButton();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        JTAentrada = new javax.swing.JTextArea();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        JTtokens = new javax.swing.JTextArea();
+        jScrollPane4 = new javax.swing.JScrollPane();
+        JTSalida = new javax.swing.JTextArea();
+        jMenuBar1 = new javax.swing.JMenuBar();
+        jMenu1 = new javax.swing.JMenu();
+        jMnuevo = new javax.swing.JMenuItem();
+        jmAbrir = new javax.swing.JMenuItem();
+        jmGuardar = new javax.swing.JMenuItem();
+        jmSalir = new javax.swing.JMenuItem();
+        jMenu2 = new javax.swing.JMenu();
+        jmTablaTokens = new javax.swing.JMenuItem();
+        jmTablaErrores = new javax.swing.JMenuItem();
+        jmEjecutar = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jTextArea1.setColumns(20);
-        jTextArea1.setRows(5);
-        jScrollPane1.setViewportView(jTextArea1);
+        jButton1.setText("jButton1");
+
+        JTAentrada.setColumns(20);
+        JTAentrada.setRows(5);
+        jScrollPane2.setViewportView(JTAentrada);
+
+        JTtokens.setColumns(20);
+        JTtokens.setRows(5);
+        jScrollPane3.setViewportView(JTtokens);
+
+        JTSalida.setColumns(20);
+        JTSalida.setRows(5);
+        jScrollPane4.setViewportView(JTSalida);
+
+        jMenu1.setText("Archivo");
+
+        jMnuevo.setText("Nuevo");
+        jMenu1.add(jMnuevo);
+
+        jmAbrir.setText("Abrir");
+        jMenu1.add(jmAbrir);
+
+        jmGuardar.setText("Guardar");
+        jMenu1.add(jmGuardar);
+
+        jmSalir.setText("Salir");
+        jMenu1.add(jmSalir);
+
+        jMenuBar1.add(jMenu1);
+
+        jMenu2.setText("Reportes");
+
+        jmTablaTokens.setText("Tabla de Tokens");
+        jMenu2.add(jmTablaTokens);
+
+        jmTablaErrores.setText("Tabla de Errores");
+        jMenu2.add(jmTablaErrores);
+
+        jMenuBar1.add(jMenu2);
+
+        jmEjecutar.setText("Ejecutar");
+        jMenuBar1.add(jmEjecutar);
+
+        setJMenuBar(jMenuBar1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(78, 78, 78)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 297, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(515, Short.MAX_VALUE))
+                .addGap(48, 48, 48)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 296, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(122, 122, 122)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 358, Short.MAX_VALUE)
+                    .addComponent(jScrollPane4))
+                .addContainerGap(66, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(135, 135, 135)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 315, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(162, Short.MAX_VALUE))
+                .addContainerGap(85, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 157, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(142, 142, 142)
+                        .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 242, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(71, 71, 71))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 373, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(141, 141, 141))))
         );
 
         pack();
@@ -83,7 +150,22 @@ public class Principal extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTextArea jTextArea1;
+    private javax.swing.JTextArea JTAentrada;
+    private javax.swing.JTextArea JTSalida;
+    private javax.swing.JTextArea JTtokens;
+    private javax.swing.JButton jButton1;
+    private javax.swing.JMenu jMenu1;
+    private javax.swing.JMenu jMenu2;
+    private javax.swing.JMenuBar jMenuBar1;
+    private javax.swing.JMenuItem jMnuevo;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JScrollPane jScrollPane4;
+    private javax.swing.JMenuItem jmAbrir;
+    private javax.swing.JMenu jmEjecutar;
+    private javax.swing.JMenuItem jmGuardar;
+    private javax.swing.JMenuItem jmSalir;
+    private javax.swing.JMenuItem jmTablaErrores;
+    private javax.swing.JMenuItem jmTablaTokens;
     // End of variables declaration//GEN-END:variables
 }
