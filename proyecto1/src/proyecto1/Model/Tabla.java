@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package proyecto1.Model;
+package proyecto1.model;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -27,7 +27,7 @@ public class Tabla {
        schema.put(campo,tipo);
        
    }
-   public void agregarREgistro(Map<String, Object> registro){
+   public void agregarRegistro(Map<String, Object> registro){
        registros.add(registro);
    }
    public void limpiar(){

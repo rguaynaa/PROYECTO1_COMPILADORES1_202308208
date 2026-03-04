@@ -1,10 +1,21 @@
 package proyecto1;
 
 import java_cup.runtime.*;
+import proyecto1.controller.Controlador;
+import java.util.ArrayList;
 
 parser code {:
     public void report_error(String message, Object info) {
-        System.err.println("Error sintáctico: " + message);
+        if (info instanceof Symbol) {
+            Symbol s = (Symbol) info;
+            System.err.println("Error sintáctico: " + message + 
+                " en línea " + s.left + ", columna " + s.right);
+        } else {
+            System.err.println("Error sintáctico: " + message);
+        }
+    }
+    public void report_fatal_error(String message, Object info) {
+        report_error(message, info);
     }
 :}
 
@@ -24,6 +35,179 @@ terminal PUNTOYCOMA, DOSPUNTOS, COMA, PUNTO, ASTERISCO;
 
 /* ── No terminales ── */
 non terminal programa;
+non terminal instruccion, lista_instrucciones;
+non terminal inst_database, inst_use, inst_table, inst_add;
+non terminal inst_read, inst_update, inst_clear, inst_export;
+non terminal lista_campos_tabla, campo_tabla;
+non terminal tipo_dato;
+non terminal lista_valores_add, valor_add;
+non terminal campos_read, lista_campos_read;
+non terminal expresion;
+non terminal lista_set, item_set;
+non terminal valor;
+non terminal elementos_array;
 
-/* ── Producciones ── */
-programa ::= /* vacío */ ;
+/* ── Precedencia ── */
+precedence left OR;
+precedence left AND;
+precedence right NOT;
+precedence left MAYORIGUAL, MENORIGUAL, MAYOR, MENOR, IGUAL, DIFERENTE;
+
+/* ── Gramática ── */
+
+programa ::= lista_instrucciones
+           | /* vacío */
+           ;
+
+lista_instrucciones ::= lista_instrucciones instruccion
+                      | instruccion
+                      ;
+
+instruccion ::= inst_database
+              | inst_use
+              | inst_table
+              | inst_add
+              | inst_read
+              | inst_update
+              | inst_clear
+              | inst_export
+              ;
+
+/* ── DATABASE ── */
+inst_database ::= DATABASE ID:nombre ABRELLAVE STORE AT CADENA:ruta PUNTOYCOMA CIERRALLAVE
+                  {: Controlador.getInstance().crearDatabase(nombre, ruta); :}
+                | DATABASE ID:nombre ABRELLAVE CIERRALLAVE
+                  {: Controlador.getInstance().crearDatabase(nombre, "default.json"); :}
+                ;
+
+/* ── USE ── */
+inst_use ::= USE ID:nombre PUNTOYCOMA
+             {: Controlador.getInstance().usarDatabase(nombre); :}
+           ;
+
+/* ── TABLE ── */
+inst_table ::= TABLE ID:nombre ABRELLAVE lista_campos_tabla CIERRALLAVE
+               {: Controlador.getInstance().crearTabla(nombre); :}
+             ;
+
+lista_campos_tabla ::= lista_campos_tabla campo_tabla
+                     | campo_tabla
+                     ;
+
+campo_tabla ::= ID:campo DOSPUNTOS tipo_dato:tipo PUNTOYCOMA
+                {: Controlador.getInstance().agregarCampo(campo, (String)tipo); :}
+              | ID:campo DOSPUNTOS tipo_dato:tipo
+                {: Controlador.getInstance().agregarCampo(campo, (String)tipo); :}
+              ;
+
+tipo_dato ::= INT     {: RESULT = "int"; :}
+            | FLOAT   {: RESULT = "float"; :}
+            | BOOL    {: RESULT = "bool"; :}
+            | STRING  {: RESULT = "string"; :}
+            | ARRAY   {: RESULT = "array"; :}
+            | OBJECT  {: RESULT = "object"; :}
+            | NULL    {: RESULT = "null"; :}
+            ;
+
+/* ── ADD ── */
+inst_add ::= ADD ID:tabla ABRELLAVE lista_valores_add CIERRALLAVE PUNTOYCOMA
+             {: Controlador.getInstance().ejecutarAdd(tabla); :}
+           ;
+
+lista_valores_add ::= lista_valores_add COMA valor_add
+                    | valor_add
+                    ;
+
+valor_add ::= ID:campo DOSPUNTOS valor:val
+              {: Controlador.getInstance().agregarValorAdd(campo, val); :}
+            ;
+
+/* ── READ ── */
+inst_read ::= READ ID:tabla ABRELLAVE campos_read FILTER DOSPUNTOS expresion:exp PUNTOYCOMA CIERRALLAVE PUNTOYCOMA
+              {: 
+                  Controlador.getInstance().setFiltro((String)exp);
+                  Controlador.getInstance().ejecutarRead(tabla); 
+              :}
+            | READ ID:tabla ABRELLAVE campos_read CIERRALLAVE PUNTOYCOMA
+              {: 
+                  Controlador.getInstance().setFiltro(null);
+                  Controlador.getInstance().ejecutarRead(tabla); 
+              :}
+            ;
+
+campos_read ::= FIELDS DOSPUNTOS ASTERISCO PUNTOYCOMA
+                {: Controlador.getInstance().setFieldsTodos(); :}
+              | FIELDS DOSPUNTOS lista_campos_read PUNTOYCOMA
+              | FIELDS DOSPUNTOS lista_campos_read COMA PUNTOYCOMA
+              ;
+
+lista_campos_read ::= lista_campos_read COMA ID:campo
+                      {: Controlador.getInstance().agregarField(campo); :}
+                    | ID:campo
+                      {: Controlador.getInstance().agregarField(campo); :}
+                    ;
+
+
+
+/* ── UPDATE ── */
+inst_update ::= UPDATE ID:tabla ABRELLAVE SET DOSPUNTOS lista_set PUNTOYCOMA FILTER DOSPUNTOS expresion:exp PUNTOYCOMA CIERRALLAVE PUNTOYCOMA
+                {: 
+                    Controlador.getInstance().setFiltro((String)exp);
+                    Controlador.getInstance().ejecutarUpdate(tabla); 
+                :}
+              | UPDATE ID:tabla ABRELLAVE SET DOSPUNTOS lista_set PUNTOYCOMA CIERRALLAVE PUNTOYCOMA
+                {: 
+                    Controlador.getInstance().setFiltro(null);
+                    Controlador.getInstance().ejecutarUpdate(tabla); 
+                :}
+              ;
+lista_set ::= lista_set COMA item_set
+            | item_set
+            ;
+
+item_set ::= ID:campo ASIGNACION valor:val
+             {: Controlador.getInstance().agregarItemSet(campo, val); :}
+           ;
+
+/* ── CLEAR ── */
+inst_clear ::= CLEAR ID:tabla PUNTOYCOMA
+               {: Controlador.getInstance().ejecutarClear(tabla); :}
+             ;
+
+/* ── EXPORT ── */
+inst_export ::= EXPORT CADENA:archivo PUNTOYCOMA
+                {: Controlador.getInstance().ejecutarExport(archivo); :}
+              | EXPORT ID:archivo PUNTO ID:ext PUNTOYCOMA
+                {: Controlador.getInstance().ejecutarExport(archivo + "." + ext); :}
+              ;
+
+/* ── VALORES ── */
+valor ::= ENTERO:v   {: RESULT = v; :}
+        | DECIMAL:v  {: RESULT = v; :}
+        | CADENA:v   {: RESULT = v; :}
+        | TRUE:v     {: RESULT = v; :}
+        | FALSE:v    {: RESULT = v; :}
+        | NULL       {: RESULT = null; :}
+        | ABRECORCHETE elementos_array CIERRACORCHETE
+                     {: RESULT = Controlador.getInstance().getArrayTemp(); :}
+        ;
+
+elementos_array ::= elementos_array COMA valor:v
+                    {: Controlador.getInstance().agregarElementoArray(v); :}
+                  | valor:v
+                    {: Controlador.getInstance().agregarElementoArray(v); :}
+                  | /* vacío */
+                  ;
+
+/* ── EXPRESIONES DE FILTRO ── */
+expresion ::= expresion:a AND expresion:b       {: RESULT = a + "&&" + b; :}
+            | expresion:a OR  expresion:b       {: RESULT = a + "||" + b; :}
+            | NOT expresion:a                   {: RESULT = "!" + a; :}
+            | ABREPAREN expresion:a CIERRAPAREN {: RESULT = "(" + a + ")"; :}
+            | ID:a IGUAL      valor:b           {: RESULT = a + "==" + b; :}
+            | ID:a DIFERENTE  valor:b           {: RESULT = a + "!=" + b; :}
+            | ID:a MAYOR      valor:b           {: RESULT = a + ">" + b; :}
+            | ID:a MENOR      valor:b           {: RESULT = a + "<" + b; :}
+            | ID:a MAYORIGUAL valor:b           {: RESULT = a + ">=" + b; :}
+            | ID:a MENORIGUAL valor:b           {: RESULT = a + "<=" + b; :}
+            ;

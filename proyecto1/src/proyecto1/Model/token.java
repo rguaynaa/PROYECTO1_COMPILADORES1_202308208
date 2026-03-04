@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package proyecto1.Model;
+package proyecto1.model;
 
 /**
  *
@@ -22,4 +22,11 @@ public class token {
        this.linea=linea;
        this.columna=columna;
    }
+   
+    public int getNumero() { return numero; }
+    public String getLexema() { return lexema; }
+    public String getTipo() { return tipo; }
+    public int getLinea() { return linea; }
+    public int getColumna() { return columna; }
+   
 }

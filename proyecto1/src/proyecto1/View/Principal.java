@@ -4,11 +4,37 @@
  */
 package proyecto1.View;
 
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.StringReader;
+import java.util.List;
+import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.JScrollPane;
+import java_cup.runtime.Symbol;
+import proyecto1.Scanner;
+import proyecto1.controller.Controlador;
+
+import proyecto1.model.token;
+
+
+import proyecto1.Scanner;
+import proyecto1.Parser;
+
 /**
  *
  * @author rodrigo
  */
 public class Principal extends javax.swing.JFrame {
+    
+    private File archivoActual = null;
+    private java.util.List<proyecto1.model.token> listaTokens = new java.util.ArrayList<>();
+    private java.util.List<String[]> listaErrores = new java.util.ArrayList<>();
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(Principal.class.getName());
 
@@ -35,6 +61,9 @@ public class Principal extends javax.swing.JFrame {
         JTtokens = new javax.swing.JTextArea();
         jScrollPane4 = new javax.swing.JScrollPane();
         JTSalida = new javax.swing.JTextArea();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMnuevo = new javax.swing.JMenuItem();
@@ -45,6 +74,7 @@ public class Principal extends javax.swing.JFrame {
         jmTablaTokens = new javax.swing.JMenuItem();
         jmTablaErrores = new javax.swing.JMenuItem();
         jmEjecutar = new javax.swing.JMenu();
+        jEjecutar = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -62,18 +92,28 @@ public class Principal extends javax.swing.JFrame {
         JTSalida.setRows(5);
         jScrollPane4.setViewportView(JTSalida);
 
+        jLabel1.setText("jLabel1");
+
+        jLabel2.setText("jLabel2");
+
+        jLabel3.setText("jLabel3");
+
         jMenu1.setText("Archivo");
 
         jMnuevo.setText("Nuevo");
+        jMnuevo.addActionListener(this::jMnuevoActionPerformed);
         jMenu1.add(jMnuevo);
 
         jmAbrir.setText("Abrir");
+        jmAbrir.addActionListener(this::jmAbrirActionPerformed);
         jMenu1.add(jmAbrir);
 
         jmGuardar.setText("Guardar");
+        jmGuardar.addActionListener(this::jmGuardarActionPerformed);
         jMenu1.add(jmGuardar);
 
         jmSalir.setText("Salir");
+        jmSalir.addActionListener(this::jmSalirActionPerformed);
         jMenu1.add(jmSalir);
 
         jMenuBar1.add(jMenu1);
@@ -81,14 +121,22 @@ public class Principal extends javax.swing.JFrame {
         jMenu2.setText("Reportes");
 
         jmTablaTokens.setText("Tabla de Tokens");
+        jmTablaTokens.addActionListener(this::jmTablaTokensActionPerformed);
         jMenu2.add(jmTablaTokens);
 
         jmTablaErrores.setText("Tabla de Errores");
+        jmTablaErrores.addActionListener(this::jmTablaErroresActionPerformed);
         jMenu2.add(jmTablaErrores);
 
         jMenuBar1.add(jMenu2);
 
         jmEjecutar.setText("Ejecutar");
+        jmEjecutar.addActionListener(this::jmEjecutarActionPerformed);
+
+        jEjecutar.setText("Ejecutar");
+        jEjecutar.addActionListener(this::jEjecutarActionPerformed);
+        jmEjecutar.add(jEjecutar);
+
         jMenuBar1.add(jmEjecutar);
 
         setJMenuBar(jMenuBar1);
@@ -99,30 +147,165 @@ public class Principal extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(48, 48, 48)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 296, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 296, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel1))
                 .addGap(122, 122, 122)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 358, Short.MAX_VALUE)
-                    .addComponent(jScrollPane4))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel2)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 358, Short.MAX_VALUE)
+                        .addComponent(jScrollPane4))
+                    .addComponent(jLabel3))
                 .addContainerGap(66, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap(85, Short.MAX_VALUE)
+                .addContainerGap(62, Short.MAX_VALUE)
+                .addComponent(jLabel2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 157, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(142, 142, 142)
+                        .addGap(113, 113, 113)
+                        .addComponent(jLabel3)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 242, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(71, 71, 71))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(jLabel1)
+                        .addGap(18, 18, 18)
                         .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 373, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(141, 141, 141))))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void jMnuevoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMnuevoActionPerformed
+        JTAentrada.setText("");
+        JTSalida.setText("");
+        JTtokens.setText("");
+        archivoActual = null;
+        setTitle("ELI NoSQL - Nuevo archivo");
+    }//GEN-LAST:event_jMnuevoActionPerformed
+
+    private void jmAbrirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmAbrirActionPerformed
+        JFileChooser fc = new JFileChooser();
+        fc.setFileFilter(new javax.swing.filechooser.FileNameExtensionFilter("Archivos ELI (*.code)", "code"));
+        int result = fc.showOpenDialog(this);
+            if (result == JFileChooser.APPROVE_OPTION) {
+                archivoActual = fc.getSelectedFile();
+                try {
+                    StringBuilder contenido = new StringBuilder();
+                    BufferedReader br = new BufferedReader(new FileReader(archivoActual));
+                    String linea;
+                    while ((linea = br.readLine()) != null) {
+                        contenido.append(linea).append("\n");
+                    }
+                    br.close();
+                    JTAentrada.setText(contenido.toString());
+                    setTitle("ELI NoSQL - " + archivoActual.getName());
+                    } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(this, 
+                        "Error al abrir: " + ex.getMessage(),
+                        "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }//GEN-LAST:event_jmAbrirActionPerformed
+
+    private void jmGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmGuardarActionPerformed
+        if (archivoActual == null) {
+        JFileChooser fc = new JFileChooser();
+        fc.setFileFilter(new javax.swing.filechooser.FileNameExtensionFilter(
+            "Archivos ELI (*.code)", "code"));
+        int result = fc.showSaveDialog(this);
+        if (result == JFileChooser.APPROVE_OPTION) {
+            archivoActual = fc.getSelectedFile();
+            if (!archivoActual.getName().endsWith(".code")) {
+                archivoActual = new File(archivoActual.getAbsolutePath() + ".code");
+            }
+        } else {
+            return;
+        }
+    }
+    try {
+        FileWriter fw = new FileWriter(archivoActual);
+        fw.write(JTAentrada.getText());
+        fw.close();
+        setTitle("ELI NoSQL - " + archivoActual.getName());
+        JOptionPane.showMessageDialog(this, "Archivo guardado correctamente.");
+    } catch (Exception ex) {
+        JOptionPane.showMessageDialog(this,
+            "Error al guardar: " + ex.getMessage(),"Error", JOptionPane.ERROR_MESSAGE);
+            
+        }
+    }//GEN-LAST:event_jmGuardarActionPerformed
+
+    private void jmSalirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmSalirActionPerformed
+        // TODO add your handling code here:
+        System.exit(0);
+    }//GEN-LAST:event_jmSalirActionPerformed
+
+    private void jmTablaTokensActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmTablaTokensActionPerformed
+        String[] columnas = {"#", "Lexema", "Tipo", "Línea", "Columna"};
+    DefaultTableModel model = new DefaultTableModel(columnas, 0);
+    for (proyecto1.model.token t : listaTokens) {
+        model.addRow(new Object[]{
+            t.getNumero(), t.getLexema(), t.getTipo(),
+            t.getLinea(), t.getColumna()
+        });
+    }
+    JTable tabla = new JTable(model);
+    JScrollPane scroll = new JScrollPane(tabla);
+    scroll.setPreferredSize(new java.awt.Dimension(600, 400));
+    JOptionPane.showMessageDialog(this, scroll,
+        "Tabla de Tokens", JOptionPane.PLAIN_MESSAGE);
+    }//GEN-LAST:event_jmTablaTokensActionPerformed
+
+    private void jmTablaErroresActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmTablaErroresActionPerformed
+        String[] columnas = {"#", "Tipo", "Descripción", "Línea", "Columna"};
+    DefaultTableModel model = new DefaultTableModel(columnas, 0);
+    for (String[] e : listaErrores) {
+        model.addRow(e);
+    }
+    JTable tabla = new JTable(model);
+    JScrollPane scroll = new JScrollPane(tabla);
+    scroll.setPreferredSize(new java.awt.Dimension(600, 400));
+    JOptionPane.showMessageDialog(this, scroll,
+        "Tabla de Errores", JOptionPane.PLAIN_MESSAGE);
+    }//GEN-LAST:event_jmTablaErroresActionPerformed
+
+    private void jmEjecutarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmEjecutarActionPerformed
+        
+    }//GEN-LAST:event_jmEjecutarActionPerformed
+
+    private void jEjecutarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jEjecutarActionPerformed
+        String codigo = JTAentrada.getText();
+    if (codigo.trim().isEmpty()) {
+        JOptionPane.showMessageDialog(this, "El editor está vacío.");
+        return;
+    }
+
+    // Limpiar estado previo
+    listaTokens.clear();
+    listaErrores.clear();
+    JTSalida.setText("");
+    JTtokens.setText("");
+    Controlador.getInstance().limpiarConsola();
+    Controlador.getInstance().limpiarReporte();
+
+    try {
+        Scanner scanner = new Scanner(new StringReader(codigo));
+        Parser parser = new Parser(scanner);
+        parser.parse();
+        JTSalida.setText(Controlador.getInstance().getConsola());
+    } catch (Exception ex) {
+        JTSalida.setText(Controlador.getInstance().getConsola() +
+            "\nError: " + ex.getMessage());
+    }
+    }//GEN-LAST:event_jEjecutarActionPerformed
 
     /**
      * @param args the command line arguments
@@ -154,6 +337,10 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JTextArea JTSalida;
     private javax.swing.JTextArea JTtokens;
     private javax.swing.JButton jButton1;
+    private javax.swing.JMenuItem jEjecutar;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuBar jMenuBar1;
