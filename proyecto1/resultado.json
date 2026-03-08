@@ -1,0 +1,13 @@
+{
+  "table": "estudiantes",
+  "fields": {
+    "nombre": "string",
+    "edad": "int"
+  },
+  "records": [
+    {
+      "nombre": "Luis",
+      "edad": 22
+    }
+  ]
+}

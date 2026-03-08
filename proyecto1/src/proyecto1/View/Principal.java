@@ -289,18 +289,27 @@ public class Principal extends javax.swing.JFrame {
     }
 
     // Limpiar estado previo
-    listaTokens.clear();
-    listaErrores.clear();
+    proyecto1.Scanner.limpiar();
     JTSalida.setText("");
     JTtokens.setText("");
     Controlador.getInstance().limpiarConsola();
     Controlador.getInstance().limpiarReporte();
 
     try {
-        Scanner scanner = new Scanner(new StringReader(codigo));
+        proyecto1.Scanner scanner= new proyecto1.Scanner(new StringReader(codigo));
+   
         Parser parser = new Parser(scanner);
         parser.parse();
+        
+        listaTokens= proyecto1.Scanner.listaTokens;
+        listaErrores=proyecto1.Scanner.listaErrores;
+        
+        //mostrar el resultado en la consola
         JTSalida.setText(Controlador.getInstance().getConsola());
+        
+        //mostrar el resumen de tokens
+        JTtokens.setText("tokens encontrados: "+ listaTokens.size() + "Errores lexicos: "+ listaErrores.size());
+        
     } catch (Exception ex) {
         JTSalida.setText(Controlador.getInstance().getConsola() +
             "\nError: " + ex.getMessage());

@@ -6,13 +6,20 @@ import java.util.ArrayList;
 
 parser code {:
     public void report_error(String message, Object info) {
+        String linea="?";
+        String columna="?";
         if (info instanceof Symbol) {
             Symbol s = (Symbol) info;
+            linea=String.valueOf(s.left);
+            columna=String.valueOf(s.right);
             System.err.println("Error sintáctico: " + message + 
                 " en línea " + s.left + ", columna " + s.right);
-        } else {
-            System.err.println("Error sintáctico: " + message);
+       
         }
+        proyecto1.Scanner.listaErrores.add(new String[]{
+        String.valueOf(proyecto1.Scanner.listaErrores.size()+1),"Sintactico","Error sintactico",linea,columna});
+
+       
     }
     public void report_fatal_error(String message, Object info) {
         report_error(message, info);
@@ -86,8 +93,9 @@ inst_use ::= USE ID:nombre PUNTOYCOMA
            ;
 
 /* ── TABLE ── */
-inst_table ::= TABLE ID:nombre ABRELLAVE lista_campos_tabla CIERRALLAVE
+inst_table ::= TABLE ID:nombre ABRELLAVE 
                {: Controlador.getInstance().crearTabla(nombre); :}
+               lista_campos_tabla CIERRALLAVE
              ;
 
 lista_campos_tabla ::= lista_campos_tabla campo_tabla

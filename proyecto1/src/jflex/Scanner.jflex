@@ -12,11 +12,30 @@ import java_cup.runtime.Symbol;
 %public
 
 %{
-    private Symbol symbol(int type) {
-        return new Symbol(type, yyline + 1, yycolumn + 1);
+    public static java.util.List<proyecto1.model.token> listaTokens = new java.util.ArrayList<>();
+    public static java.util.List<String[]> listaErrores = new java.util.ArrayList<>();
+    public static int contadorTokens = 1;
+    public static int contadorErrores = 1;
+
+    public static void limpiar() {
+        listaTokens.clear();
+        listaErrores.clear();
+        contadorTokens = 1;
+        contadorErrores = 1;
     }
+
+    private Symbol symbol(int type) {
+        String nombreTipo = sym.terminalNames[type];
+        listaTokens.add(new proyecto1.model.token(
+            contadorTokens++, yytext(), nombreTipo, yyline+1, yycolumn+1));
+        return new Symbol(type, yyline+1, yycolumn+1);
+    }
+
     private Symbol symbol(int type, Object value) {
-        return new Symbol(type, yyline + 1, yycolumn + 1, value);
+        String nombreTipo = sym.terminalNames[type];
+        listaTokens.add(new proyecto1.model.token(
+            contadorTokens++, yytext(), nombreTipo, yyline+1, yycolumn+1));
+        return new Symbol(type, yyline+1, yycolumn+1, value);
     }
 %}
 
@@ -109,6 +128,11 @@ WhiteSpace      = [ \t\r\n]+
 
 /* ── Error léxico ── */
 .               { 
-                    System.err.println("Error léxico: carácter '" + yytext() + 
-                    "' en línea " + (yyline+1) + ", columna " + (yycolumn+1));
+                    listaErrores.add(new String[]{
+                        String.valueOf(contadorErrores++),
+                        "Léxico",
+                        "Carácter desconocido: '" + yytext() + "'",
+                        String.valueOf(yyline+1),
+                        String.valueOf(yycolumn+1)
+                    });
                 }
