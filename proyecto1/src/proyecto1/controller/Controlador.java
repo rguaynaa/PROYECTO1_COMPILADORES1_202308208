@@ -228,64 +228,72 @@ private void parsearSchema(String schemaJson, Tabla tabla) {
 }
 
 private void parsearRecords(String recordsJson, Tabla tabla) {
-    int pos = 0;
+     int pos = 0;
     while (pos < recordsJson.length()) {
         int regStart = recordsJson.indexOf("{", pos);
         if (regStart == -1) break;
         String regJson = extraerBloque(recordsJson, regStart);
-        
+
         Map<String, Object> registro = new java.util.LinkedHashMap<>();
         int rpos = 0;
         while (rpos < regJson.length()) {
+            // Buscar clave
             int keyStart = regJson.indexOf("\"", rpos);
             if (keyStart == -1) break;
             int keyEnd = regJson.indexOf("\"", keyStart + 1);
             if (keyEnd == -1) break;
             String key = regJson.substring(keyStart + 1, keyEnd);
-            
-            int colonPos = regJson.indexOf(":", keyEnd);
+
+            // Buscar valor después de los dos puntos
+            int colonPos = regJson.indexOf(":", keyEnd + 1);
             if (colonPos == -1) break;
-            
-            String resto = regJson.substring(colonPos + 1).trim();
+
+            // Saltar espacios
+            int valStart = colonPos + 1;
+            while (valStart < regJson.length() && 
+                   regJson.charAt(valStart) == ' ') valStart++;
+
             Object valor;
-            
-            if (resto.startsWith("\"")) {
-                int vEnd = resto.indexOf("\"", 1);
-                valor = resto.substring(1, vEnd);
-                rpos = colonPos + (resto.indexOf("\"", 1)) + 3;
-            } else if (resto.startsWith("null")) {
+            int nextPos;
+
+            if (regJson.charAt(valStart) == '"') {
+                // Valor string
+                int vEnd = regJson.indexOf("\"", valStart + 1);
+                valor = regJson.substring(valStart + 1, vEnd);
+                nextPos = vEnd + 1;
+            } else if (regJson.startsWith("null", valStart)) {
                 valor = null;
-                rpos = colonPos + 5;
-            } else if (resto.startsWith("true")) {
+                nextPos = valStart + 4;
+            } else if (regJson.startsWith("true", valStart)) {
                 valor = true;
-                rpos = colonPos + 5;
-            } else if (resto.startsWith("false")) {
+                nextPos = valStart + 4;
+            } else if (regJson.startsWith("false", valStart)) {
                 valor = false;
-                rpos = colonPos + 6;
+                nextPos = valStart + 5;
             } else {
-                int vEnd = 0;
-                while (vEnd < resto.length() && 
-                       (Character.isDigit(resto.charAt(vEnd)) || 
-                        resto.charAt(vEnd) == '.' || 
-                        resto.charAt(vEnd) == '-')) {
+                // Valor numérico
+                int vEnd = valStart;
+                while (vEnd < regJson.length() && 
+                       (Character.isDigit(regJson.charAt(vEnd)) || 
+                        regJson.charAt(vEnd) == '.' || 
+                        regJson.charAt(vEnd) == '-')) {
                     vEnd++;
                 }
-                String numStr = resto.substring(0, vEnd).trim();
+                String numStr = regJson.substring(valStart, vEnd).trim();
                 if (numStr.contains(".")) {
                     valor = Double.parseDouble(numStr);
                 } else {
                     valor = Integer.parseInt(numStr);
                 }
-                rpos = colonPos + vEnd + 1;
+                nextPos = vEnd;
             }
+
             registro.put(key, valor);
-            rpos = keyEnd + 1;
-            int nextKey = regJson.indexOf("\"", rpos);
-            if (nextKey == -1) break;
-            rpos = nextKey;
+            rpos = nextPos;
         }
+
         tabla.agregarRegistro(registro);
-        pos = regStart + regJson.length() + 1;
+        pos = regStart + regJson.length() + 2;
     }
 }
 
