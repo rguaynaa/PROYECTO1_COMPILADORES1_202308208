@@ -125,8 +125,7 @@ public class Controlador {
     public void cargarPersistencia(String ruta) {
     try {
         java.io.File archivo = new java.io.File(ruta);
-        consola.append("DEBUG: archivo existe: " + archivo.exists() + "\n");
-        consola.append("DEBUG: ruta absoluta: " + archivo.getAbsolutePath() + "\n");
+   
         if (!archivo.exists()) return;
         
         // Leer archivo
@@ -201,10 +200,17 @@ public class Controlador {
         }
         
         consola.append("Base de datos '" + nombreDb + "' cargada desde '" + ruta + "'.\n");
+        consola.append("Tablas cargadas:\n");
+        for (String nombreTabla : db.getTablas().keySet()) {
+            Tabla t = db.getTabla(nombreTabla);
+            consola.append("  - " + nombreTabla + 
+                " (" + t.getRegistros().size() + " registro(s))\n");
+}
         
     } catch (Exception e) {
         consola.append("Error al cargar persistencia: " + e.getMessage() + "\n");
     }
+    
 }
 
 private void parsearSchema(String schemaJson, Tabla tabla) {
